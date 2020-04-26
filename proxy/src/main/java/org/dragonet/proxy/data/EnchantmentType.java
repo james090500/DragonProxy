@@ -16,13 +16,43 @@
  *
  * https://github.com/DragonetMC/DragonProxy
  */
-package org.dragonet.proxy.network.translator;
+package org.dragonet.proxy.data;
 
-import lombok.Getter;
-import org.dragonet.proxy.network.session.ProxySession;
-
-@Getter
-public abstract class PacketTranslator<P> {
-
-    public abstract void translate(ProxySession session, P packet);
+public enum EnchantmentType {
+    PROTECTION,
+    FIRE_PROTECTION,
+    FEATHER_FALLING,
+    BLAST_PROTECTION,
+    PROJECTILE_PROTECTION,
+    THORNS,
+    RESPIRATION,
+    DEPTH_STRIDER,
+    AQUA_AFFINITY,
+    SHARPNESS,
+    SMITE,
+    BANE_OF_ARTHROPODS,
+    KNOCKBACK,
+    FIRE_ASPECT,
+    LOOTING,
+    EFFICIENCY,
+    SILK_TOUCH,
+    UNBREAKING,
+    FORTUNE,
+    POWER,
+    PUNCH,
+    FLAME,
+    INFINITY,
+    LUCK_OF_THE_SEA,
+    LURE,
+    FROST_WALKER,
+    MENDING,
+    BINDING_CURSE,
+    VANISHING_CURSE,
+    IMPALING,
+    RIPTIDE,
+    LOYALTY,
+    CHANNELING,
+    MULTISHOT,
+    PIERCING,
+    QUICK_CHARGE
 }

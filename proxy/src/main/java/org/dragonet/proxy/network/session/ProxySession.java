@@ -23,6 +23,7 @@ import com.github.steveice10.mc.auth.exception.request.RequestException;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.data.SubProtocol;
 import com.github.steveice10.mc.protocol.data.game.ClientRequest;
+import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
 import com.github.steveice10.mc.protocol.data.game.statistic.Statistic;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientRequestPacket;
 import com.github.steveice10.packetlib.Client;
@@ -107,8 +108,6 @@ public class ProxySession implements PlayerSession {
     private Vector3i lastClickedPosition = null;
     private CachedEntity lastClickedEntity = null;
 
-    private boolean firstTimePacket = true;
-
     public ProxySession(DragonProxy proxy, BedrockServerSession bedrockSession) {
         this.proxy = proxy;
         this.bedrockSession = bedrockSession;
@@ -182,6 +181,15 @@ public class ProxySession implements PlayerSession {
             } catch (RequestException e) {
                 log.warn("Failed to authenticate player: " + e.getMessage());
                 sendMessage(TextFormat.RED + e.getMessage());
+                return;
+            }
+
+            // Set our own remote uuid
+            cachedEntity.setJavaUuid(protocol.getProfile().getId());
+
+            // Fetch our skin
+            if(proxy.getConfiguration().getPlayerConfig().isFetchSkin()) {
+                fetchOurSkin();
             }
 
             sendMessage(TextFormat.GREEN + "Login successful! Joining server...");
@@ -210,6 +218,24 @@ public class ProxySession implements PlayerSession {
     }
 
     /**
+     * Fetch our own skin.
+     */
+    private void fetchOurSkin() {
+        GameProfile profile = protocol.getProfile();
+
+        proxy.getGeneralThreadPool().execute(() -> {
+            ImageData skinData = SkinUtils.fetchSkin(this, profile);
+            if (skinData == null) return;
+
+            ImageData capeData = SkinUtils.fetchUnofficialCape(profile);
+            if(capeData == null) capeData = ImageData.EMPTY;
+
+            GameProfile.TextureModel model = profile.getTexture(GameProfile.TextureType.SKIN).getModel();
+            setPlayerSkin2(authData.getIdentity(), skinData, model, capeData);
+        });
+    }
+
+    /**
      * Fetch statistics from the remote server.
      *
      * @return a future that completes if the server responds to the stats request
@@ -233,7 +259,6 @@ public class ProxySession implements PlayerSession {
         if(proxy.getConfiguration().getRemoteAuthType() == RemoteAuthType.CREDENTIALS) {
             dataCache.put("auth_state", AuthState.AUTHENTICATING);
             sendFakeStartGame(false);
-            sendLoginForm();
             return;
         }
 
@@ -319,18 +344,23 @@ public class ProxySession implements PlayerSession {
 
         log.warn("SPAWN PLAYER");
 
+        if(proxy.getConfiguration().getRemoteAuthType() == RemoteAuthType.CREDENTIALS) {
+            sendLoginForm();
+            return;
+        }
+
         // Start connecting to remote server.
         // There is a slight delay before connection because otherwise the player will join
         // the server too quickly and chunks will not show.
         if(proxy.getConfiguration().getRemoteAuthType() == RemoteAuthType.OFFLINE) {
-            sendMessage(TextFormat.DARK_AQUA + "Waiting 3 seconds before connecting...");
+            sendMessage(TextFormat.DARK_AQUA + "Waiting 2 seconds before connecting...");
 
             proxy.getGeneralThreadPool().schedule(() -> {
                 sendMessage(" ");
 
                 RemoteServer remoteServer = new RemoteServer("local", proxy.getConfiguration().getRemoteAddress(), proxy.getConfiguration().getRemotePort());
                 connect(remoteServer);
-            }, 3, TimeUnit.SECONDS);
+            }, 2, TimeUnit.SECONDS);
         }
     }
 
@@ -418,7 +448,7 @@ public class ProxySession implements PlayerSession {
      * @param skinData the skin data
      */
     public void setPlayerSkin(UUID playerId, long entityId, ImageData skinData, GameProfile.TextureModel model, ImageData capeData) {
-        GameProfile profile = playerListCache.getPlayerInfo().get(playerId).getProfile();
+        GameProfile profile = playerListCache.getPlayerInfo().get(playerId).getEntry().getProfile();
 
         // Remove the player from the player list
         PlayerListPacket removePacket = new PlayerListPacket();
@@ -433,7 +463,7 @@ public class ProxySession implements PlayerSession {
         PlayerListPacket.Entry entry = new PlayerListPacket.Entry(playerId);
         entry.setEntityId(entityId);
         entry.setName(profile.getName());
-        entry.setSkin(SkinUtils.createSkinEntry(this, skinData, model, capeData));
+        entry.setSkin(SkinUtils.createSkinEntry(skinData, model, capeData));
         entry.setXuid("");
         entry.setPlatformChatId("");
 
@@ -455,7 +485,7 @@ public class ProxySession implements PlayerSession {
         PlayerSkinPacket playerSkinPacket = new PlayerSkinPacket();
         playerSkinPacket.setUuid(playerId);
 
-        playerSkinPacket.setSkin(SkinUtils.createSkinEntry(this, skinData, model, capeData));
+        playerSkinPacket.setSkin(SkinUtils.createSkinEntry(skinData, model, capeData));
         sendPacket(playerSkinPacket);
     }
 
@@ -494,6 +524,16 @@ public class ProxySession implements PlayerSession {
         inventoryContentPacket.setContainerId(ContainerId.CREATIVE);
         inventoryContentPacket.setContents(creativeItems);
         sendPacket(inventoryContentPacket);
+    }
+
+    public void sendGamemode() {
+        SetPlayerGameTypePacket setPlayerGameTypePacket = new SetPlayerGameTypePacket();
+        setPlayerGameTypePacket.setGamemode(cachedEntity.getGameMode().ordinal());
+        sendPacket(setPlayerGameTypePacket);
+
+        if(cachedEntity.getGameMode() == GameMode.CREATIVE) {
+            sendCreativeInventory();
+        }
     }
 
     public void onTick() {

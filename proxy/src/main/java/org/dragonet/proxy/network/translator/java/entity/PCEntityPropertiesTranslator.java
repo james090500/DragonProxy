@@ -21,20 +21,19 @@ package org.dragonet.proxy.network.translator.java.entity;
 import com.github.steveice10.mc.protocol.data.game.entity.attribute.Attribute;
 import com.github.steveice10.mc.protocol.data.game.entity.attribute.AttributeType;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.ServerEntityPropertiesPacket;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.extern.log4j.Log4j2;
 import org.dragonet.proxy.data.entity.BedrockAttributeType;
 import org.dragonet.proxy.network.session.ProxySession;
 import org.dragonet.proxy.network.session.cache.object.CachedEntity;
-import org.dragonet.proxy.network.translator.PacketTranslator;
-import org.dragonet.proxy.network.translator.annotations.PCPacketTranslator;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.dragonet.proxy.network.translator.misc.PacketTranslator;
+import org.dragonet.proxy.util.registry.PacketRegisterInfo;
 
 @Log4j2
-@PCPacketTranslator(packetClass = ServerEntityPropertiesPacket.class)
+@PacketRegisterInfo(packet = ServerEntityPropertiesPacket.class)
 public class PCEntityPropertiesTranslator extends PacketTranslator<ServerEntityPropertiesPacket> {
-    private static Map<AttributeType, BedrockAttributeType> attributeMap = new HashMap<>();
+    private static Object2ObjectMap<AttributeType, BedrockAttributeType> attributeMap = new Object2ObjectOpenHashMap<>();
 
     static {
         //attributeMap.put(AttributeType.GENERIC_FLYING_SPEED, BedrockAttributeType.MOVEMENT_SPEED); Causes issue with sprinting
