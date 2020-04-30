@@ -318,7 +318,7 @@ public class ProxySession implements PlayerSession {
      * Displays a form to choose options
      */
     public void sendConnectionPrompt() {
-        ModalForm form = new ModalForm(TextFormat.BLUE + "This is a test", "Choose Server")
+        ModalForm form = new ModalForm(TextFormat.BLUE + "Choose Server", "Choose a server to join")
             .addComponent(new ButtonComponent("§r§l» §2§lCapeCraft§r §r§l«\n§r§l» §9§lSURVIVAL & CREATIVE §r§l«", "https://capecraft.net/assets/img/logo/bedrock-logo.png"))
             .addComponent(new ButtonComponent("Other Server"));
 
