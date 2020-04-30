@@ -45,7 +45,7 @@ public class PCSpawnPlayerTranslator extends PacketTranslator<ServerSpawnPlayerP
     public void translate(ProxySession session, ServerSpawnPlayerPacket packet) {
         PlayerListInfo playerListInfo = session.getPlayerListCache().getPlayerInfo().get(packet.getUuid());
         if(playerListInfo == null) {
-            log.warn("Received spawn player before player list. Ignoring...");
+            //log.warn("Received spawn player before player list. Ignoring...");
             return;
         }
         PlayerListEntry playerListEntry = playerListInfo.getEntry();
@@ -83,7 +83,7 @@ public class PCSpawnPlayerTranslator extends PacketTranslator<ServerSpawnPlayerP
                 try {
                     model = playerListEntry.getProfile().getTexture(GameProfile.TextureType.SKIN).getModel();
                 } catch (PropertyException e) {
-                    log.warn("Failed to get skin model for player " + profile.getName(), e);
+                    //log.warn("Failed to get skin model for player " + profile.getName(), e);
                 }
                 session.setPlayerSkin(profile.getId(), cachedPlayer.getProxyEid(), skinData, model, capeData);
             });

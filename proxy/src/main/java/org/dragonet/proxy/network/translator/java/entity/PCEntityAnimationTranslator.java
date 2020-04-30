@@ -35,7 +35,7 @@ public class PCEntityAnimationTranslator extends PacketTranslator<ServerEntityAn
     public void translate(ProxySession session, ServerEntityAnimationPacket packet) {
         CachedEntity cachedEntity = session.getEntityCache().getByRemoteId(packet.getEntityId());
         if(cachedEntity == null) {
-            log.info(TextFormat.GRAY + "(debug) PCEntityAnimationTranslator: Cached entity is null");
+            //log.info(TextFormat.GRAY + "(debug) PCEntityAnimationTranslator: Cached entity is null");
             return;
         }
 
@@ -56,7 +56,7 @@ public class PCEntityAnimationTranslator extends PacketTranslator<ServerEntityAn
                 animatePacket.setAction(AnimatePacket.Action.WAKE_UP);
                 break;
             default:
-                log.info("(debug) Unhandled animation " + packet.getAnimation().name());
+                //log.info("(debug) Unhandled animation " + packet.getAnimation().name());
                 break;
         }
 

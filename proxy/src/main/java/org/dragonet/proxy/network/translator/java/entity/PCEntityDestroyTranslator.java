@@ -35,7 +35,7 @@ public class PCEntityDestroyTranslator extends PacketTranslator<ServerEntityDest
         for(int entityId : packet.getEntityIds()) {
             CachedEntity cachedEntity = session.getEntityCache().getByRemoteId(entityId);
             if(cachedEntity == null) {
-                //log.warn("EntityDestroy: Cached entity doesn't exist");
+                ////log.warn("EntityDestroy: Cached entity doesn't exist");
                 return;
             }
 
@@ -44,7 +44,7 @@ public class PCEntityDestroyTranslator extends PacketTranslator<ServerEntityDest
                 return;
             }
 
-            log.trace("Destroying entity with proxy eid: " + cachedEntity.getProxyEid());
+            //log.trace("("Destroying entity with proxy eid: " + cachedEntity.getProxyEid());
             cachedEntity.destroy(session);
         }
     }

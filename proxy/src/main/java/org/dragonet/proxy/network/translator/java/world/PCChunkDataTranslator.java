@@ -105,7 +105,7 @@ public class PCChunkDataTranslator extends PacketTranslator<ServerChunkDataPacke
                 buffer.release();
             }
         } else {
-            log.warn("non full chunk");
+            //log.warn("non full chunk");
         }
     }
 }

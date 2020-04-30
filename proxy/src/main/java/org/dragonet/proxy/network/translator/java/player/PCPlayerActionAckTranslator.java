@@ -37,7 +37,7 @@ public class PCPlayerActionAckTranslator extends PacketTranslator<ServerPlayerAc
     @Override
     public void translate(ProxySession session, ServerPlayerActionAckPacket packet) {
         if(!packet.isSuccessful()) {
-            log.info(TextFormat.GRAY + "(debug) Player action not successful: " + packet.getAction().name());
+            //log.info(TextFormat.GRAY + "(debug) Player action not successful: " + packet.getAction().name());
             //return;
         }
 

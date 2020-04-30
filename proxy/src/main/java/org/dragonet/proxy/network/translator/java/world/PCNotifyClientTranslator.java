@@ -104,13 +104,13 @@ public class PCNotifyClientTranslator extends PacketTranslator<ServerNotifyClien
                 }
                 break;
             case DEMO_MESSAGE:
-                log.info(TextFormat.AQUA + "Demo message received");
+                //log.info(TextFormat.AQUA + "Demo message received");
                 break;
             case INVALID_BED:
-                log.info(TextFormat.AQUA + "Invalid bed");
+                //log.info(TextFormat.AQUA + "Invalid bed");
                 break;
             case ARROW_HIT_PLAYER:
-                log.info(TextFormat.AQUA + "Arrow hit player!");
+                //log.info(TextFormat.AQUA + "Arrow hit player!");
                 break;
         }
     }

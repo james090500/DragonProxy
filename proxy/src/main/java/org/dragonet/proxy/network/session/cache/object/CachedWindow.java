@@ -59,7 +59,7 @@ public class CachedWindow {
             // TODO: check how far away from the players current position
             Integer runtimeId = BlockTranslator.bedrockIdToRuntime(windowType.getFakeId());
             if(runtimeId == null) {
-                log.warn("Unable to get runtime id for block: " + windowType.getFakeId());
+                //log.warn("Unable to get runtime id for block: " + windowType.getFakeId());
                 return;
             }
             if(session.getLastClickedPosition() != null && session.getChunkCache().getBlockAt(session.getLastClickedPosition()) == runtimeId) {
@@ -114,7 +114,7 @@ public class CachedWindow {
 
     private void sendFakeBlock(ProxySession session, Vector3i position) {
         fakeBlockPosition = position;
-        //log.warn("fake block");
+        ////log.warn("fake block");
 
         session.getChunkCache().sendFakeBlock(session, windowType.getFakeId(), position);
 

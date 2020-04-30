@@ -47,14 +47,14 @@ public class PCEntityPropertiesTranslator extends PacketTranslator<ServerEntityP
     public void translate(ProxySession session, ServerEntityPropertiesPacket packet) {
         CachedEntity cachedEntity = session.getEntityCache().getByRemoteId(packet.getEntityId());
         if(cachedEntity == null) {
-            log.trace("(debug) EntityProperties: Cached entity is null");
+            //log.trace("("(debug) EntityProperties: Cached entity is null");
             return;
         }
 
         for(Attribute attribute : packet.getAttributes()) {
             BedrockAttributeType bedrockAttribute = attributeMap.get(attribute.getType());
             if(bedrockAttribute == null) {
-                log.trace("Cannot translate attribute: " + attribute.getType().name());
+                //log.trace("("Cannot translate attribute: " + attribute.getType().name());
                 return;
             }
             // TODO: modifiers

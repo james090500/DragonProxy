@@ -38,7 +38,7 @@ public class PCPlayerFacingTranslator extends PacketTranslator<ServerPlayerFacin
 
         CachedEntity targetEntity = session.getEntityCache().getByRemoteId(packet.getTargetEntityId());
         if(targetEntity == null) {
-//            log.warn("Target entity is null");
+//            //log.warn("Target entity is null");
             return;
         }
 

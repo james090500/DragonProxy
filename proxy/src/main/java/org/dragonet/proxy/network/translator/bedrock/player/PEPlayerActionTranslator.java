@@ -49,7 +49,7 @@ public class PEPlayerActionTranslator extends PacketTranslator<PlayerActionPacke
     public void translate(ProxySession session, PlayerActionPacket packet) {
         CachedEntity cachedEntity = session.getEntityCache().getByProxyId(packet.getRuntimeEntityId());
         if(cachedEntity == null) {
-            log.info(TextFormat.GRAY + "(debug) Cached entity not found in PEPlayerActionTranslator");
+            //log.info(TextFormat.GRAY + "(debug) Cached entity not found in PEPlayerActionTranslator");
             return;
         }
 
@@ -113,7 +113,7 @@ public class PEPlayerActionTranslator extends PacketTranslator<PlayerActionPacke
             case STOP_SWIMMING:
                 break;
             default:
-                log.info(TextFormat.GRAY + "(debug) Unhandled player action: " + packet.getAction().name());
+                //log.info(TextFormat.GRAY + "(debug) Unhandled player action: " + packet.getAction().name());
                 break;
         }
     }

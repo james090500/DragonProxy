@@ -33,7 +33,7 @@ public class PCEntityVelocityTranslator extends PacketTranslator<ServerEntityVel
     public void translate(ProxySession session, ServerEntityVelocityPacket packet) {
         CachedEntity cachedEntity = session.getEntityCache().getByRemoteId(packet.getEntityId());
         if(cachedEntity == null) {
-            //log.info("(debug) EntityVelocity: Cached entity is null");
+            ////log.info("(debug) EntityVelocity: Cached entity is null");
             return;
         }
 

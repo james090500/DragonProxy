@@ -110,7 +110,7 @@ public class PCDeclareCommandsTranslator extends PacketTranslator<ServerDeclareC
             CommandParamData[] params = new CommandParamData[entry.getValue().size()];
 
             for (int i2 = 0; i2 < params.length; i2++) {
-                //log.info("PARAM: " + i2 + "  " + entry.getValue().get(i2).getName());
+                ////log.info("PARAM: " + i2 + "  " + entry.getValue().get(i2).getName());
                 ProxyCommandArgument argument = entry.getValue().get(i2);
                 CommandParamData.Type type = parserTypeMap.get(argument.getParser());
                 if (type == null) {
@@ -139,7 +139,7 @@ public class PCDeclareCommandsTranslator extends PacketTranslator<ServerDeclareC
         }
 
 //        for(CommandData d : availableCommandsPacket.getCommands()) {
-//            log.info(d.getName() + " " + d.getOverloads().length + " // " + Arrays.deepToString(d.getOverloads()));
+//            //log.info(d.getName() + " " + d.getOverloads().length + " // " + Arrays.deepToString(d.getOverloads()));
 //        }
 
         session.sendPacket(availableCommandsPacket);

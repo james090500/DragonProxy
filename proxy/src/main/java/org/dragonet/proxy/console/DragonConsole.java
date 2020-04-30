@@ -49,7 +49,7 @@ public class DragonConsole extends SimpleTerminalConsole {
                 break;
             }
             case ("help"): {
-                log.info("\nCommands:\nstop: stop the DragonProxy server\nviewcache\nhelp: show this page");
+                //log.info("\nCommands:\nstop: stop the DragonProxy server\nviewcache\nhelp: show this page");
                 break;
             }
             case "kill":
@@ -57,14 +57,14 @@ public class DragonConsole extends SimpleTerminalConsole {
                 break;
             case "viewcache":
                 proxy.getSessionManager().getSessions().forEach(session -> {
-                    log.info(TextFormat.AQUA + "> Username: " + session.getUsername());
-                    log.info("Entities: " + session.getEntityCache().getEntities().size());
-                    log.info("Bossbars: " + session.getEntityCache().getBossbars().size());
-                    log.info("Chunks: " + session.getChunkCache().getJavaChunks().size());
+                    //log.info(TextFormat.AQUA + "> Username: " + session.getUsername());
+                    //log.info("Entities: " + session.getEntityCache().getEntities().size());
+                    //log.info("Bossbars: " + session.getEntityCache().getBossbars().size());
+                    //log.info("Chunks: " + session.getChunkCache().getJavaChunks().size());
                 });
                 break;
             default: {
-                log.info("Unknown command: " + command);
+                //log.info("Unknown command: " + command);
                 break;
             }
         }

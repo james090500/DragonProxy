@@ -49,8 +49,6 @@ public class PCPlayerPositionRotationTranslator extends PacketTranslator<ServerP
 
             session.sendPacket(movePlayerPacket);
             entity.setSpawned(true);
-
-            log.info("Spawned player " + session.getUsername() + " at " + packet.getX() + " " + packet.getY() + " " + packet.getZ());
             return;
         }
 

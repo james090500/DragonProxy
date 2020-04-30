@@ -36,13 +36,13 @@ public class PCPlayBuiltinSoundTranslator extends PacketTranslator<ServerPlayBui
     public void translate(ProxySession session, ServerPlayBuiltinSoundPacket packet) {
         String soundName = SoundTranslator.translateToBedrock(packet.getSound());
         if(soundName == null) {
-            log.info(TextFormat.DARK_AQUA + "No mapping for sound: " + packet.getSound().name());
+            //log.info(TextFormat.DARK_AQUA + "No mapping for sound: " + packet.getSound().name());
             return;
         }
 
         // TODO: use LevelSoundEventPacket for supported sounds?
 
-        //log.info("translating sound: " + packet.getSound().name().toLowerCase() + "  ///  " + soundName);
+        ////log.info("translating sound: " + packet.getSound().name().toLowerCase() + "  ///  " + soundName);
 
         PlaySoundPacket playSoundPacket = new PlaySoundPacket();
         playSoundPacket.setPosition(Vector3f.from(packet.getX(), packet.getY(), packet.getZ()));

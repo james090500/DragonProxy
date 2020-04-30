@@ -36,7 +36,7 @@ public class PCPlaySoundTranslator extends PacketTranslator<ServerPlaySoundPacke
     @Override
     public void translate(ProxySession session, ServerPlaySoundPacket packet) {
         if(!(packet.getSound() instanceof BuiltinSound)) {
-            log.info("PCPlaySoundTranslator: Custom sound received, ignoring");
+            //log.info("PCPlaySoundTranslator: Custom sound received, ignoring");
             return;
         }
 
@@ -44,11 +44,11 @@ public class PCPlaySoundTranslator extends PacketTranslator<ServerPlaySoundPacke
         String soundName = SoundTranslator.translateToBedrock(sound);
 
         if(soundName == null) {
-            log.info(TextFormat.DARK_AQUA + "No mapping for sound: " + sound.name());
+            //log.info(TextFormat.DARK_AQUA + "No mapping for sound: " + sound.name());
             return;
         }
 
-        //log.info("translating sound: " + sound.name().toLowerCase() + "  ///  " + soundName);
+        ////log.info("translating sound: " + sound.name().toLowerCase() + "  ///  " + soundName);
 
         PlaySoundPacket playSoundPacket = new PlaySoundPacket();
         playSoundPacket.setPosition(Vector3f.from(packet.getX(), packet.getY(), packet.getZ()));

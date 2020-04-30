@@ -112,7 +112,7 @@ public class CachedEntity {
         addEntityPacket.getMetadata().putAll(metadata);
         addEntityPacket.getAttributes().addAll(attributes.values());
 
-        //log.info(getMetadata());
+        ////log.info(getMetadata());
 
         session.sendPacket(addEntityPacket);
         spawned = true;

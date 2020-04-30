@@ -35,13 +35,13 @@ public class PCEntityRemoveEffectTranslator extends PacketTranslator<ServerEntit
     public void translate(ProxySession session, ServerEntityRemoveEffectPacket packet) {
         CachedEntity cachedEntity = session.getEntityCache().getByRemoteId(packet.getEntityId());
         if(cachedEntity == null) {
-            //log.warn("Cached entity is null");
+            ////log.warn("Cached entity is null");
             return;
         }
 
         EntityEffectTranslator.BedrockEffect effect = EntityEffectTranslator.translateToBedrock(packet.getEffect());
         if(effect == null) {
-            log.warn("Cannot translate effect: " + packet.getEffect().name());
+            //log.warn("Cannot translate effect: " + packet.getEffect().name());
             return;
         }
 

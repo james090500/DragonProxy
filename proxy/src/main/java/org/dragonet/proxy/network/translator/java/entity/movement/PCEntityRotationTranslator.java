@@ -34,7 +34,7 @@ public class PCEntityRotationTranslator extends PacketTranslator<ServerEntityRot
     public void translate(ProxySession session, ServerEntityRotationPacket packet) {
         CachedEntity cachedEntity = session.getEntityCache().getByRemoteId(packet.getEntityId());
         if(cachedEntity == null) {
-            //log.info(TextFormat.GRAY + "(debug) EntityRotation: Cached entity is null");
+            ////log.info(TextFormat.GRAY + "(debug) EntityRotation: Cached entity is null");
             return;
         }
 

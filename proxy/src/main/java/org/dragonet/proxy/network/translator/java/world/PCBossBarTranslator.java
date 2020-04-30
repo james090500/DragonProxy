@@ -73,7 +73,7 @@ public class PCBossBarTranslator extends PacketTranslator<ServerBossBarPacket> {
                 //bossEventPacket.setOverlay(0);
                 break;
             default:
-                log.info(TextFormat.GRAY + "(debug) Unhandled boss bar action: " + packet.getAction().name());
+                //log.info(TextFormat.GRAY + "(debug) Unhandled boss bar action: " + packet.getAction().name());
                 break;
         }
 
@@ -110,7 +110,7 @@ public class PCBossBarTranslator extends PacketTranslator<ServerBossBarPacket> {
 
             session.sendPacket(removeEntityPacket);
         } else {
-            log.info(TextFormat.GRAY + "(debug) tried removing a bossbar that doesnt exist");
+            //log.info(TextFormat.GRAY + "(debug) tried removing a bossbar that doesnt exist");
         }
     }
 }

@@ -31,7 +31,7 @@ import java.io.File;
 public class Bootstrap {
 
     public static void main(String[] args) {
-        log.info("Starting DragonProxy...");
+        //log.info("Starting DragonProxy...");
 
         // Check the java version
         if (Float.parseFloat(System.getProperty("java.class.version")) < 52.0) {
@@ -50,7 +50,7 @@ public class Bootstrap {
         // Handle command-line options
         OptionSet options = optionParser.parse(args);
         if (options.has("version")) {
-            log.info("Version: " + Bootstrap.class.getPackage().getImplementationVersion());
+            //log.info("Version: " + Bootstrap.class.getPackage().getImplementationVersion());
             return;
         }
 

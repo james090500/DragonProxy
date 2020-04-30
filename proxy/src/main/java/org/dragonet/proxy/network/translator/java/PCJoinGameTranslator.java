@@ -126,7 +126,7 @@ public class PCJoinGameTranslator extends PacketTranslator<ServerJoinGamePacket>
         try {
             brandOutput.writeString("DragonProxy");
         } catch (IOException e) {
-            log.warn("Failed to send client brand: " + e.getMessage());
+            //log.warn("Failed to send client brand: " + e.getMessage());
             return;
         }
         session.sendRemotePacket(new ClientPluginMessagePacket("minecraft:brand", brandOutput.getByteBuffer().array()));

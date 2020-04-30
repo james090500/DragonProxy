@@ -119,7 +119,7 @@ public class EntityMetaTranslator {
                         translatorMap.get(entity.getEntityType()).translateToBedrock(session, dictionary, meta);
                         break;
                     }
-                    //log.info("No meta translator for " + entity.getEntityType().name());
+                    ////log.info("No meta translator for " + entity.getEntityType().name());
                     break;
             }
         }

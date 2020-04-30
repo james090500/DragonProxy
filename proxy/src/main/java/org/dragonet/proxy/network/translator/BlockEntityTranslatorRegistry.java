@@ -95,7 +95,7 @@ public class BlockEntityTranslatorRegistry extends Registry {
         String bedrockId = getBedrockIdentifier(javaId);
 
         if(bedrockId == null) {
-            log.info(TextFormat.GRAY + "(debug) Unhandled block entity: " + javaId);
+            //log.info(TextFormat.GRAY + "(debug) Unhandled block entity: " + javaId);
             return null;
         }
 

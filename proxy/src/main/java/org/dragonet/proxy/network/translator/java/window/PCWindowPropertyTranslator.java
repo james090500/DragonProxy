@@ -35,7 +35,7 @@ public class PCWindowPropertyTranslator extends PacketTranslator<ServerWindowPro
     public void translate(ProxySession session, ServerWindowPropertyPacket packet) {
         WindowCache windowCache = session.getWindowCache();
         if(!windowCache.getWindows().containsKey(packet.getWindowId())) {
-            //log.info("(debug) WindowPropertyTranslator: Window not in cache, id: " + packet.getWindowId());
+            ////log.info("(debug) WindowPropertyTranslator: Window not in cache, id: " + packet.getWindowId());
             return;
         }
 

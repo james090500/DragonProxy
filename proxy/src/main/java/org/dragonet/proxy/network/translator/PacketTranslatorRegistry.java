@@ -59,13 +59,13 @@ public class PacketTranslatorRegistry<P> extends Registry {
         Class<?> packetClass = packet.getClass();
         PacketTranslator<P> target = translators.get(packetClass);
         if (target == null) {
-            //log.info("Unhandled packet received from remote: {}", packetClass.getSimpleName());
+            ////log.info("Unhandled packet received from remote: {}", packetClass.getSimpleName());
             return;
         }
         if (session.getDownstream() == null || session.getBedrockSession().isClosed()) {
             return;
         }
-        //log.trace("Translating packet: " + packetClass.getSimpleName());
+        ////log.trace("("Translating packet: " + packetClass.getSimpleName());
         target.translate(session, packet);
     }
 

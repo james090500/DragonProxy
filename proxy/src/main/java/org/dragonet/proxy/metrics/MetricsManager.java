@@ -56,7 +56,7 @@ public class MetricsManager {
 
             UUID serverId = UUID.fromString(config.getProperty("server-uuid"));
             if(config.getProperty("enable").equalsIgnoreCase("true")) {
-                log.info(TextFormat.DARK_AQUA + "Metrics enabled: " + TextFormat.GRAY + serverId.toString());
+                //log.info(TextFormat.DARK_AQUA + "Metrics enabled: " + TextFormat.GRAY + serverId.toString());
                 initMetrics(serverId);
             }
 

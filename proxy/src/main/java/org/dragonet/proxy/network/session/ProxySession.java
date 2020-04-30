@@ -34,6 +34,9 @@ import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.nukkitx.math.vector.Vector2f;
 import com.nukkitx.math.vector.Vector3f;
 import com.nukkitx.math.vector.Vector3i;
@@ -44,9 +47,12 @@ import com.nukkitx.protocol.bedrock.BedrockServerSession;
 import com.nukkitx.protocol.bedrock.data.*;
 import com.nukkitx.protocol.bedrock.packet.*;
 import lombok.Data;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.dragonet.proxy.DragonProxy;
 import org.dragonet.proxy.form.CustomForm;
+import org.dragonet.proxy.form.ModalForm;
+import org.dragonet.proxy.form.components.ButtonComponent;
 import org.dragonet.proxy.form.components.InputComponent;
 import org.dragonet.proxy.form.components.LabelComponent;
 import org.dragonet.proxy.network.session.cache.*;
@@ -131,30 +137,34 @@ public class ProxySession implements PlayerSession {
      * @param server the server to connect to
      */
     public void connect(RemoteServer server) {
+
+        // Enable coordinates now
+        GameRulesChangedPacket gameRulesChangedPacket = new GameRulesChangedPacket();
+        gameRulesChangedPacket.getGameRules().add(new GameRuleData<>("showcoordinates", true));
+        bedrockSession.sendPacket(gameRulesChangedPacket);
+
         if (protocol == null) {
             protocol = new MinecraftProtocol(authData.getDisplayName());
         }
         downstream = new Client(server.getAddress(), server.getPort(), protocol, new TcpSessionFactory());
         downstream.getSession().addListener(new SessionAdapter() {
-
             @Override
             public void connected(ConnectedEvent event) {
-                log.info("Player connected to remote " + server.getAddress());
+                log.info(String.format("[%s] %s has connected to %s:%d", bedrockSession.getAddress().toString(), authData.getDisplayName(), server.getAddress(), server.getPort()));
             }
 
             @Override
             public void disconnected(DisconnectedEvent event) {
                 if(event.getCause() != null) {
-                    event.getCause().printStackTrace();
+                    bedrockSession.disconnect(String.format("We were unable to connect you %s:%d\nAre you sure that's the correct IP?", server.getAddress(), server.getPort()));
+                } else {
+                    log.info(String.format("[%s] %s has disconnected from %s:%d", bedrockSession.getAddress().toString(), authData.getDisplayName(), server.getAddress(), server.getPort()));
                 }
-                log.info("Player disconnected from remote. Reason: " + event.getReason());
-                bedrockSession.disconnect(event.getReason());
             }
 
             @Override
             public void packetReceived(PacketReceivedEvent event) {
                 try {
-                    //log.info("Packet received from remote: " + event.getPacket().getClass().getSimpleName());
                     PacketTranslatorRegistry.JAVA_TO_BEDROCK.translate(ProxySession.this, event.getPacket());
                 } catch (Exception e) {
                     log.throwing(e);
@@ -173,13 +183,14 @@ public class ProxySession implements PlayerSession {
      * @param email    the mojang account email
      * @param password the mojang account password
      */
-    public void authenticate(String email, String password) {
+    public void authenticate(String server, int port, String email, String password) {
         proxy.getGeneralThreadPool().execute(() -> {
             try {
                 protocol = new MinecraftProtocol(email, password);
             } catch (RequestException e) {
-                log.warn("Failed to authenticate player: " + e.getMessage());
+                //log.warn("Failed to authenticate player: " + e.getMessage());
                 sendMessage(TextFormat.RED + e.getMessage());
+                connectExternal();
                 return;
             }
 
@@ -202,17 +213,57 @@ public class ProxySession implements PlayerSession {
             sendMessage(" ");
 
             // Start connecting to remote server
-            RemoteServer remoteServer = new RemoteServer("local", proxy.getConfiguration().getRemoteAddress(), proxy.getConfiguration().getRemotePort());
+            RemoteServer remoteServer = new RemoteServer("local", server, port);
             connect(remoteServer);
 
-            // Enable coordinates now
-            GameRulesChangedPacket gameRulesChangedPacket = new GameRulesChangedPacket();
-            gameRulesChangedPacket.getGameRules().add(new GameRuleData<>("showcoordinates", true));
-            bedrockSession.sendPacket(gameRulesChangedPacket);
-
             dataCache.put("auth_state", AuthState.AUTHENTICATED);
+        });
+    }
 
-            log.info("Player " + authData.getDisplayName() + " has been authenticated");
+    /**
+     * Connect to CapeCraft
+     */
+    private void connectCapeCraft() {
+        // Empty line to seperate DragonProxy messages from server messages
+        sendMessage(" ");
+
+        // Start connecting to remote server
+        RemoteServer remoteServer = new RemoteServer("local", "127.0.0.1", 25577);
+        connect(remoteServer);
+    }
+
+    /**
+     * Connect to an external server
+     */
+    private void connectExternal() {
+        dataCache.put("auth_state", AuthState.AUTHENTICATING);
+
+        CustomForm form = new CustomForm(TextFormat.BLUE + "Connect to external server")
+            .addComponent(new LabelComponent(TextFormat.GREEN + "Please enter the server ip and your Mojang credentials to connect"))
+            .addComponent(new InputComponent(TextFormat.AQUA + "IP", "play.capecraft.net"))
+            .addComponent(new InputComponent(TextFormat.AQUA + "Email", "steve@example.com"))
+            .addComponent(new InputComponent(TextFormat.AQUA + "Password", "123456"));
+
+        form.send(this).whenComplete((data, throwable) -> {
+            if (data.equalsIgnoreCase("null")) {
+                connectExternal();
+                return;
+            }
+
+            JsonArray object = new JsonParser().parse(data).getAsJsonArray();
+
+            String serverIp = new Server(object.get(1).getAsString()).getIp();
+            int serverPort = new Server(object.get(1).getAsString()).getPort();
+            String email = object.get(2).getAsString();
+            String password = object.get(3).getAsString();
+
+            if (serverIp.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                sendMessage(TextFormat.RED + "Please fill in all the required fields.");
+                connectExternal();
+                return;
+            }
+
+            authenticate(serverIp, serverPort, email, password);
         });
     }
 
@@ -233,7 +284,7 @@ public class ProxySession implements PlayerSession {
             try {
                 model = profile.getTexture(GameProfile.TextureType.SKIN).getModel();
             } catch (PropertyException e) {
-                log.warn("Failed to get skin model for player " + profile.getName(), e);
+                //log.warn("Failed to get skin model for player " + profile.getName(), e);
             }
             setPlayerSkin2(authData.getIdentity(), skinData, model, capeData);
         });
@@ -260,46 +311,33 @@ public class ProxySession implements PlayerSession {
      * This method handles the initial bedrock client connection.
      */
     public void handleJoin() {
-        if(proxy.getConfiguration().getRemoteAuthType() == RemoteAuthType.CREDENTIALS) {
-            dataCache.put("auth_state", AuthState.AUTHENTICATING);
-            sendFakeStartGame(false);
-            return;
-        }
-
         sendFakeStartGame(false);
     }
 
     /**
-     * Display a form that allows the player to enter their Mojang account credentials.
-     * This method is only called if `auth-mode` is set to `online`.
+     * Displays a form to choose options
      */
-    public void sendLoginForm() {
-        CustomForm form = new CustomForm(TextFormat.BLUE + "Login to Mojang account")
-            .addComponent(new LabelComponent("DragonProxy"))
-            .addComponent(new LabelComponent(TextFormat.GREEN + "Please enter your Mojang account credentials to authenticate"))
-            .addComponent(new InputComponent(TextFormat.AQUA + "Email", "steve@example.com"))
-            .addComponent(new InputComponent(TextFormat.AQUA + "Password", "123456"));
+    public void sendConnectionPrompt() {
+        ModalForm form = new ModalForm(TextFormat.BLUE + "This is a test", "Choose Server")
+            .addComponent(new ButtonComponent("§r§l» §2§lCapeCraft§r §r§l«\n§r§l» §9§lSURVIVAL & CREATIVE §r§l«", "https://capecraft.net/assets/img/logo/bedrock-logo.png"))
+            .addComponent(new ButtonComponent("Other Server"));
 
         form.send(this).whenComplete((data, throwable) -> {
-            if (dataCache.get("auth_state") == AuthState.AUTHENTICATED) {
-                return; // If multiple forms have been sent to the client, allow the player to actually close them
-            }
-            if (data == null) {
-                sendLoginForm();
+            if(data == null) {
+                sendConnectionPrompt();
                 return;
             }
 
-            String email = data.get(2).getAsString();
-            String password = data.get(3).getAsString();
-
-            if (email == null || password == null) {
-                // This never seems to be fired? Im guessing if one field is null the entire response is null?
-                // Anyway, its here just in case
-                sendMessage(TextFormat.RED + "Please fill in all the required fields. Move to show the form again.");
-                return;
+            switch(Integer.parseInt(data)) {
+                case 0:
+                    connectCapeCraft();
+                    return;
+                case 1:
+                    connectExternal();
+                    return;
+                default:
+                    sendConnectionPrompt();
             }
-
-            authenticate(email, password);
         });
     }
 
@@ -346,10 +384,8 @@ public class ProxySession implements PlayerSession {
         chunkRadiusUpdatedPacket.setRadius(renderDistance);
         sendPacket(chunkRadiusUpdatedPacket);
 
-        log.warn("SPAWN PLAYER");
-
         if(proxy.getConfiguration().getRemoteAuthType() == RemoteAuthType.CREDENTIALS) {
-            sendLoginForm();
+            sendConnectionPrompt();
             return;
         }
 
@@ -613,6 +649,29 @@ public class ProxySession implements PlayerSession {
     public void sendRemotePacket(Packet packet) {
         if (downstream != null && downstream.getSession() != null && protocol.getSubProtocol().equals(SubProtocol.GAME)) {
             downstream.getSession().send(packet);
+        }
+    }
+
+    private class Server {
+        @Getter
+        private String ip;
+
+        @Getter
+        private int port;
+
+        public Server(String server) {
+            String[] serverSplit = server.split(":");
+            this.ip = serverSplit[0];
+
+            if(serverSplit.length == 2) {
+                try {
+                    this.port = Integer.parseInt(serverSplit[1]);
+                } catch (NumberFormatException e) {
+                    this.port = 25565;
+                }
+            } else {
+                this.port = 25565;
+            }
         }
     }
 }

@@ -37,11 +37,11 @@ public class PCSetSlotTranslator extends PacketTranslator<ServerSetSlotPacket> {
     public void translate(ProxySession session, ServerSetSlotPacket packet) {
         WindowCache windowCache = session.getWindowCache();
         if(!windowCache.getWindows().containsKey(packet.getWindowId())) {
-            //log.info(TextFormat.GRAY + "(debug) SetSlotTranslator: Window not in cache, id: " + packet.getWindowId());
+            ////log.info(TextFormat.GRAY + "(debug) SetSlotTranslator: Window not in cache, id: " + packet.getWindowId());
             return;
         }
         CachedWindow window = windowCache.getWindows().get(packet.getWindowId());
-//        log.warn("Set slot translator: " + packet.getWindowId());
+//        //log.warn("Set slot translator: " + packet.getWindowId());
         if(packet.getWindowId() != 0 && window.getWindowType() == null) {
             return;
         }

@@ -34,7 +34,7 @@ public class PCEntityPositionTranslator extends PacketTranslator<ServerEntityPos
     public void translate(ProxySession session, ServerEntityPositionPacket packet) {
         CachedEntity cachedEntity = session.getEntityCache().getByRemoteId(packet.getEntityId());
         if(cachedEntity == null) {
-            //log.info(TextFormat.GRAY + "(debug) EntityPosition: Cached entity is null");
+            ////log.info(TextFormat.GRAY + "(debug) EntityPosition: Cached entity is null");
             return;
         }
 

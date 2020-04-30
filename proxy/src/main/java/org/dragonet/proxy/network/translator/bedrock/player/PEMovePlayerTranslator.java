@@ -39,7 +39,7 @@ public class PEMovePlayerTranslator extends PacketTranslator<MovePlayerPacket> {
     public void translate(ProxySession session, MovePlayerPacket packet) {
         CachedEntity cachedEntity = session.getEntityCache().getByProxyId(packet.getRuntimeEntityId());
         if(cachedEntity == null) {
-            log.info(TextFormat.GRAY + "(debug) MovePlayer: cached entity is null");
+            //log.info(TextFormat.GRAY + "(debug) MovePlayer: cached entity is null");
             return;
         }
 

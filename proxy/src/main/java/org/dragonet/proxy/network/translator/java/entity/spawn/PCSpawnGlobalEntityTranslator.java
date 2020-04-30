@@ -36,13 +36,11 @@ public class PCSpawnGlobalEntityTranslator extends PacketTranslator<ServerSpawnG
     public void translate(ProxySession session, ServerSpawnGlobalEntityPacket packet) {
         CachedEntity cachedEntity = session.getEntityCache().getByRemoteId(packet.getEntityId());
         if(cachedEntity != null) {
-            log.trace("Cached entity already exists, cant spawn a new one");
             return;
         }
 
         BedrockEntityType entityType = EntityTypeTranslator.translateToBedrock(packet.getType());
         if(entityType == null) {
-            log.warn("Cannot translate global entity type: " + packet.getType().name());
             return;
         }
 

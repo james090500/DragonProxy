@@ -87,7 +87,7 @@ public class PEInventoryTransactionTranslator extends PacketTranslator<Inventory
             case ITEM_USE_ON_ENTITY:
                 CachedEntity cachedEntity = session.getEntityCache().getByProxyId(packet.getRuntimeEntityId());
                 if(cachedEntity == null) {
-                    log.info(TextFormat.GRAY + "(debug) InventoryTransactionPacket: Cached entity is null");
+                    //log.info(TextFormat.GRAY + "(debug) InventoryTransactionPacket: Cached entity is null");
                     return;
                 }
 

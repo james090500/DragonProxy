@@ -41,7 +41,7 @@ public class PCSpawnObjectTranslator extends PacketTranslator<ServerSpawnObjectP
     public void translate(ProxySession session, ServerSpawnObjectPacket packet) {
         CachedEntity cachedEntity = session.getEntityCache().getByRemoteId(packet.getEntityId());
         if(cachedEntity != null) {
-            log.trace("Cached entity already exists, cant spawn a new one");
+            //log.trace("("Cached entity already exists, cant spawn a new one");
             return;
         }
 
@@ -51,7 +51,7 @@ public class PCSpawnObjectTranslator extends PacketTranslator<ServerSpawnObjectP
 
         BedrockEntityType entityType = EntityTypeTranslator.translateToBedrock(packet.getType());
         if(entityType == null) {
-            log.warn("Cannot translate object type: " + packet.getType().name());
+            //log.warn("Cannot translate object type: " + packet.getType().name());
             return;
         }
 

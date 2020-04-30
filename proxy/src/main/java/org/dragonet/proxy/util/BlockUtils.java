@@ -44,11 +44,11 @@ public class BlockUtils {
         ItemEntry itemEntry = ItemTranslatorRegistry.bedrockToJavaMap.get(item.getId());
 
         if(blockEntry == null) {
-            log.info("(debug) block entry is null in getBreakTime, id: " + blockId);
+            //log.info("(debug) block entry is null in getBreakTime, id: " + blockId);
             return 0;
         }
         if(itemEntry == null) {
-            log.info("(debug) item entry is null in getBreakTime, id: " + item.getId());
+            //log.info("(debug) item entry is null in getBreakTime, id: " + item.getId());
             return 0;
         }
 

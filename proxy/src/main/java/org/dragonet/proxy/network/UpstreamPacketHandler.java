@@ -20,16 +20,7 @@ package org.dragonet.proxy.network;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
-import com.github.steveice10.mc.protocol.data.game.entity.player.GameMode;
-import com.github.steveice10.mc.protocol.data.game.setting.Difficulty;
-import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.nimbusds.jose.JWSObject;
-import com.nukkitx.protocol.bedrock.BedrockPacket;
-import com.nukkitx.protocol.bedrock.BedrockServerSession;
-import com.nukkitx.protocol.bedrock.data.PlayerPermission;
 import com.nukkitx.protocol.bedrock.handler.BedrockPacketHandler;
 import com.nukkitx.protocol.bedrock.packet.*;
 import com.nukkitx.protocol.bedrock.util.EncryptionUtils;
@@ -37,13 +28,9 @@ import lombok.extern.log4j.Log4j2;
 import net.minidev.json.JSONObject;
 import org.dragonet.proxy.DragonProxy;
 import org.dragonet.proxy.network.session.ProxySession;
-import org.dragonet.proxy.network.session.cache.object.CachedPlayer;
 import org.dragonet.proxy.network.session.data.AuthData;
-import org.dragonet.proxy.network.session.data.AuthState;
 import org.dragonet.proxy.network.session.data.ClientData;
 import org.dragonet.proxy.network.translator.PacketTranslatorRegistry;
-import org.dragonet.proxy.remote.RemoteAuthType;
-import org.dragonet.proxy.remote.RemoteServer;
 import org.dragonet.proxy.util.BedrockLoginUtils;
 import org.dragonet.proxy.util.TextFormat;
 
@@ -51,7 +38,6 @@ import java.io.IOException;
 import java.security.interfaces.ECPublicKey;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Represents the connection between the bedrock client and the proxy.
@@ -147,6 +133,14 @@ public class UpstreamPacketHandler implements BedrockPacketHandler {
         // Start Resource pack handshake
         ResourcePacksInfoPacket resourcePacksInfo = new ResourcePacksInfoPacket();
         session.sendPacketImmediately(resourcePacksInfo);
+
+        log.info(String.format("[%s] %s has connected to the proxy", session.getBedrockSession().getAddress(), session.getUsername()));
+        return true;
+    }
+
+    @Override
+    public boolean handle(DisconnectPacket packet) {
+        log.info(String.format("[%s] %s has disconnected from the proxy", session.getBedrockSession().getAddress(), session.getUsername()));
         return true;
     }
 
@@ -155,8 +149,6 @@ public class UpstreamPacketHandler implements BedrockPacketHandler {
         switch (packet.getStatus()) {
             case COMPLETED:
                 session.handleJoin();
-
-                log.info("{} connected", session.getAuthData().getDisplayName());
                 break;
             case HAVE_ALL_PACKS:
                 ResourcePackStackPacket stack = new ResourcePackStackPacket();
@@ -176,27 +168,19 @@ public class UpstreamPacketHandler implements BedrockPacketHandler {
 
     @Override
     public boolean handle(MovePlayerPacket packet) {
-        if(session.getDataCache().get("auth_state") == AuthState.AUTHENTICATING) {
-            session.sendLoginForm(); // TODO: remove
-            return true;
-        }
+//        if(session.getDataCache().get("auth_state") == AuthState.AUTHENTICATING) {
+//            session.sendLoginForm(); // TODO: remove
+//            return true;
+//        }
         PacketTranslatorRegistry.BEDROCK_TO_JAVA.translate(session, packet);
         return true;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public boolean handle(ModalFormResponsePacket packet) {
         if(session.getFormCache().containsKey(packet.getFormId())) {
-            CompletableFuture<JsonArray> future = session.getFormCache().get(packet.getFormId());
-            JsonElement data = new JsonParser().parse(packet.getFormData());
-
-            if(!data.isJsonArray()) {
-                future.complete(null);
-                return true;
-            }
-
-            future.complete(new JsonParser().parse(packet.getFormData()).getAsJsonArray());
+            CompletableFuture<String> future = session.getFormCache().get(packet.getFormId());
+            future.complete(packet.getFormData().trim());
         }
         return true;
     }

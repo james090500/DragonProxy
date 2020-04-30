@@ -80,7 +80,7 @@ public class SkinUtils {
 
         // Check if the skin is already cached
         if(playerListCache.getRemoteSkinCache().containsKey(profile.getId())) {
-            //log.warn("Retrieving from cache: " + profile.getName());
+            ////log.warn("Retrieving from cache: " + profile.getName());
             return playerListCache.getRemoteSkinCache().get(profile.getId());
         }
 
@@ -88,7 +88,7 @@ public class SkinUtils {
         try {
             texture = profile.getTexture(GameProfile.TextureType.SKIN);
         } catch (PropertyException e) {
-            log.warn("Failed to get skin for player " + profile.getName(), e);
+            //log.warn("Failed to get skin for player " + profile.getName(), e);
             return null;
         }
         if(texture != null) {
@@ -97,7 +97,7 @@ public class SkinUtils {
                 playerListCache.getRemoteSkinCache().put(profile.getId(), skin); // Cache the skin
                 return skin;
             } catch (IOException e) {
-                log.warn("Failed to fetch skin for player " + profile.getName() + ": " + e.getMessage());
+                //log.warn("Failed to fetch skin for player " + profile.getName() + ": " + e.getMessage());
             }
         }
         return null;
@@ -113,7 +113,7 @@ public class SkinUtils {
 
         // Check if the cape is already cached
         if(playerListCache.getRemoteCapeCache().containsKey(profile.getId())) {
-            //log.warn("Retrieving from cache: " + profile.getName());
+            ////log.warn("Retrieving from cache: " + profile.getName());
             return playerListCache.getRemoteCapeCache().get(profile.getId());
         }
 
@@ -130,7 +130,7 @@ public class SkinUtils {
                 playerListCache.getRemoteCapeCache().put(profile.getId(), cape); // Cache the cape
                 return cape;
             } catch (IOException e) {
-                log.warn("Failed to fetch cape for player " + profile.getName() + ": " + e.getMessage());
+                //log.warn("Failed to fetch cape for player " + profile.getName() + ": " + e.getMessage());
             }
         } else {
             for (CapeServers server : CapeServers.values()) {
@@ -143,7 +143,7 @@ public class SkinUtils {
                         return parseBufferedImage(ImageIO.read(connection.getInputStream()), true);
                     }
                 } catch (IOException e) {
-                    log.warn("Failed to fetch cape for player " + profile.getName() + ": " + e.getMessage());
+                    //log.warn("Failed to fetch cape for player " + profile.getName() + ": " + e.getMessage());
                 }
             }
         }

@@ -140,7 +140,7 @@ public class BlockTranslator {
             } else {
                 int duplicateRuntimeId = addedStatesMap.get(blockTag);
                 if (duplicateRuntimeId == -1) {
-                    log.warn("Mapping " + javaIdentifier + " was not found for bedrock edition!");
+                    //log.warn("Mapping " + javaIdentifier + " was not found for bedrock edition!");
                 } else {
                     java2BedrockMap.put(javaProtocolId, duplicateRuntimeId);
                 }

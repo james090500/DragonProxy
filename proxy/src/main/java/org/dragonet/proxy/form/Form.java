@@ -35,10 +35,10 @@ public abstract class Form {
     private String type;
     private String title;
 
-    public CompletableFuture<JsonArray> send(ProxySession session) {
+    public CompletableFuture<String> send(ProxySession session) {
         int id = session.getFormIdCounter().incrementAndGet();
 
-        CompletableFuture<JsonArray> future = new CompletableFuture<>();
+        CompletableFuture<String> future = new CompletableFuture<>();
         session.getFormCache().put(id, future);
 
         ModalFormRequestPacket packet = new ModalFormRequestPacket();

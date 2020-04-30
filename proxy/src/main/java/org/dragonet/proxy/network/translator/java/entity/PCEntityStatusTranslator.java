@@ -56,7 +56,7 @@ public class PCEntityStatusTranslator extends PacketTranslator<ServerEntityStatu
     public void translate(ProxySession session, ServerEntityStatusPacket packet) {
         CachedEntity entity = session.getEntityCache().getByRemoteId(packet.getEntityId());
         if(entity == null) {
-            //log.info("(debug) Cached entity is null");
+            ////log.info("(debug) Cached entity is null");
             return;
         }
 
@@ -101,7 +101,7 @@ public class PCEntityStatusTranslator extends PacketTranslator<ServerEntityStatu
 
         EntityEventType bedrockEvent = entityEventMap.get(packet.getStatus());
         if(bedrockEvent == null) {
-            log.info(TextFormat.GRAY + "(debug) Unhandled entity status: " + packet.getStatus().name());
+            //log.info(TextFormat.GRAY + "(debug) Unhandled entity status: " + packet.getStatus().name());
             return;
         }
 

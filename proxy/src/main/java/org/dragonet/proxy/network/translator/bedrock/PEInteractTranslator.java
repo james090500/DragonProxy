@@ -33,10 +33,10 @@ public class PEInteractTranslator extends PacketTranslator<InteractPacket> {
     public void translate(ProxySession session, InteractPacket packet) {
         CachedEntity cachedEntity = session.getEntityCache().getByProxyId(packet.getRuntimeEntityId());
         if(cachedEntity == null) {
-            //log.warn("InteractPacket: Cached entity is null");
+            ////log.warn("InteractPacket: Cached entity is null");
             return;
         }
 
-        log.info("interact: " + packet.getAction().name());
+        //log.info("interact: " + packet.getAction().name());
     }
 }

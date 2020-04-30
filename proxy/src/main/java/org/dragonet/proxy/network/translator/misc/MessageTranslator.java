@@ -148,7 +148,7 @@ public class MessageTranslator {
     public static String toBedrockColor(ChatColor color) {
         String base = "\u00a7";
         if(!colorMap.containsKey(color)) {
-            log.warn("Unmapped chat colour: " + color.name());
+            //log.warn("Unmapped chat colour: " + color.name());
             return base;
         }
         return base + colorMap.get(color);
@@ -158,7 +158,7 @@ public class MessageTranslator {
         StringBuilder superBase = new StringBuilder();
         for(ChatFormat format : formats) {
             if(!formatMap.containsKey(format)) {
-                log.warn("Unmapped chat format: " + format.name());
+                //log.warn("Unmapped chat format: " + format.name());
                 continue;
             }
             superBase.append("\u00a7").append(formatMap.get(format));

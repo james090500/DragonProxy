@@ -173,7 +173,7 @@ public class Metrics {
         } catch (Exception e) {
             // Something went wrong! :(
             if (logFailedRequests) {
-                log.warn("Could not submit stats of " + name, e);
+                //log.warn("Could not submit stats of " + name, e);
             }
         }
     }
@@ -262,7 +262,7 @@ public class Metrics {
                 chart.put("data", data);
             } catch (Throwable t) {
                 if (logFailedRequests) {
-                    log.warn("Failed to get data for custom chart with id " + chartId, t);
+                    //log.warn("Failed to get data for custom chart with id " + chartId, t);
                 }
                 return null;
             }

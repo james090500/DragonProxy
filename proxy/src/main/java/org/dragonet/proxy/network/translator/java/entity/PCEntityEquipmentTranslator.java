@@ -64,7 +64,7 @@ public class PCEntityEquipmentTranslator extends PacketTranslator<ServerEntityEq
                 cachedEntity.setOffHand(ItemTranslatorRegistry.translateToBedrock(packet.getItem()));
                 return;
             default:
-                log.warn("Unknown slot: " + packet.getSlot().name());
+                //log.warn("Unknown slot: " + packet.getSlot().name());
                 return;
         }
 
